@@ -19,7 +19,30 @@ def about():
         }
     }
 
+@app.get("/blog/{id}")
+def get_blog(id: int):
+    return {
+        "data": {
+            "blog": id
+        }
+    }
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+
+@app.get("/blogs")
+def get_all_blogs(limit: int = 10, published: bool = True):
+    if published:
+        return {
+            "data": [
+                {"title": "Blog 1", "content": "Content of blog 1"},
+                {"title": "Blog 2", "content": "Content of blog 2"}
+            ],
+            "message": f"Showing {limit} blogs"
+        }
+    else:
+        return {
+            "data": [
+                {"title": "Blog 3", "content": "Content of blog 3"},
+                {"title": "Blog 4", "content": "Content of blog 4"}
+            ],
+            "message": f"Showing {limit} blogs"
+        }
