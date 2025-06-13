@@ -19,13 +19,6 @@ def about():
         }
     }
 
-@app.get("/blog/{id}")
-def get_blog(id: int):
-    return {
-        "data": {
-            "blog": id
-        }
-    }
 
 
 @app.get("/blogs")
