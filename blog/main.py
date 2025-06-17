@@ -1,5 +1,7 @@
 from fastapi import FastAPI, Depends, Response, HTTPException
 
+from typing import List
+
 from . import schemas, models
 from .database import engine, SessionLocal
 
@@ -54,12 +56,12 @@ def update_blog(
 
     return blog
 
-@app.get("/blog")
+@app.get("/blog", response_model = List[schemas.ShowAllBlogs], status_code = 200)
 def get_all_blogs(db: Session = Depends(get_db)):
     blogs = db.query(models.Blog).all()
     return blogs
 
-@app.get("/blog/{blog_id}", status_code = 200)
+@app.get("/blog/{blog_id}",response_model = schemas.ShowBlog, status_code = 200)
 def get_blog_by_id(
         blog_id: int,
         response: Response,
@@ -70,3 +72,14 @@ def get_blog_by_id(
         # response.status_code = 404
         # return {"error": f"Blog with id:{blog_id} not found"}
     return blog
+
+@app.post("/user")
+def create_user(request: schemas.User, db: Session = Depends(get_db)):
+    new_user = models.User(**request.model_dump())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+
+
