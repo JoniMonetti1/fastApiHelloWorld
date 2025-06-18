@@ -1,24 +1,54 @@
 from pydantic import BaseModel
+from typing import List
 
-class Blog(BaseModel):
-    body: str
-    title: str
 
-class ShowBlog(Blog):
+# ---------- USER SCHEMAS ----------
+
+class UserBase(BaseModel):
+    username: str
+    email: str
+
+
+class UserCreate(UserBase):
+    password: str
+
+
+class ShowUser(UserBase):
     class Config:
-         from_attributes = True
+        from_attributes = True
 
-class ShowAllBlogs(BaseModel):
+
+# ---------- BLOG SCHEMAS ----------
+
+class BlogBase(BaseModel):
     title: str
-    id: int
+    body: str
+
+
+class BlogCreate(BlogBase):
+    pass
+
+
+class ShowBlog(BlogBase):
+    creator: ShowUser
 
     class Config:
         from_attributes = True
 
-class User(BaseModel):
-    username: str
-    email: str
-    password: str
+
+class ShowAllBlogs(BaseModel):
+    id: int
+    title: str
+    creator: ShowUser
+
+    class Config:
+        from_attributes = True
 
 
+# ---------- USER WITH BLOGS ----------
 
+class ShowUserWithBlogs(ShowUser):
+    blogs: List[ShowAllBlogs]
+
+    class Config:
+        from_attributes = True
